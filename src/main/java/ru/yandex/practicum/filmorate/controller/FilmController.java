@@ -8,7 +8,9 @@ import ru.yandex.practicum.filmorate.exception.WrongReleaseDateException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -24,7 +26,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) throws WrongReleaseDateException {
+    public Film addFilm(@Valid @RequestBody Film film) {
         if (film.getId() == null || film.getId() == 0) {
             film.setId(idCounter++);
         }
@@ -35,7 +37,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) throws NotFoundException, WrongReleaseDateException {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("Обновление фильма: {}", film);
 
         if (film.getId() == null || !films.containsKey(film.getId())) {
@@ -56,7 +58,7 @@ public class FilmController {
     }
 
 
-    private void validateFilmRelease(Film film) throws WrongReleaseDateException {
+    private void validateFilmRelease(Film film) {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new WrongReleaseDateException("Дата релиза не может быть раньше 28 декабря 1895 года");
         }

@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) throws NotFoundException {
+    public User updateUser(@Valid @RequestBody User user) {
         log.info("Обновление пользователя: {}", user);
 
         if (user.getId() == null || !users.containsKey(user.getId())) {
