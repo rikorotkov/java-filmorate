@@ -2,12 +2,12 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -16,48 +16,49 @@ public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
 
     @Override
-    public Collection<User> findAllUsres() {
+    public Collection<User> findAllUsers() {
         return userStorage.findAllUsers();
     }
 
     @Override
-    public Optional<User> findUserById(long id) {
-        return Optional.empty();
+    public User findUserById(Long id) {
+        return userStorage.findUserById(id)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
     }
 
     @Override
     public User createUser(User user) {
-        return null;
+        return userStorage.createUser(user);
     }
 
     @Override
     public User updateUser(User user) {
-        return null;
+        return userStorage.updateUser(user);
     }
 
     @Override
     public void deleteUser(Long id) {
-
+        userStorage.deleteUser(id);
     }
 
     @Override
-    public void addFried(Long id, Long friendId) {
-
+    public void addFriend(Long id, Long friendId) {
+        userStorage.addToFriends(id, friendId);
     }
 
     @Override
-    public void removeFried(Long id, Long friendId) {
-
+    public void removeFriend(Long id, Long friendId) {
+        userStorage.removeFriend(id, friendId);
     }
 
     @Override
-    public Collection<User> findAllFrieds(Long id) {
-        return List.of();
+    public Set<Long> findAllFriends(Long id) {
+        return userStorage.findFriends(id);
     }
 
     @Override
-    public Collection<User> findCommonFrieds(Long id, Long friendId) {
-        return List.of();
+    public Set<Long> findCommonFriends(Long id, Long friendId) {
+        return userStorage.findCommonFriends(id, friendId);
     }
 
 }

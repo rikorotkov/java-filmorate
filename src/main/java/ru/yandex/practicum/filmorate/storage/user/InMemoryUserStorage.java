@@ -4,9 +4,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -16,31 +15,94 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
         user.setId(idCounter++);
         users.put(user.getId(), user);
         return user;
     }
 
-    @Override
     public User updateUser(User user) {
-        if (user.getId() == null || !users.containsKey(user.getId())) {
+        if (!users.containsKey(user.getId())) {
             throw new NotFoundException("Пользователь с id " + user.getId() + " не найден");
         }
 
-        User updateUser = users.get(user.getId());
-        updateUser.setEmail(user.getEmail());
-        updateUser.setLogin(user.getLogin());
-        updateUser.setName(user.getName() != null && !user.getName().isBlank() ? user.getName() : updateUser.getLogin());
-        updateUser.setBirthday(user.getBirthday());
+        User existingUser = users.get(user.getId());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setLogin(user.getLogin());
+        existingUser.setName(user.getName() != null && !user.getName().isBlank() ? user.getName() : existingUser.getLogin());
+        existingUser.setBirthday(user.getBirthday());
 
-        users.put(user.getId(), updateUser);
-
-        return updateUser;
+        return existingUser;
     }
 
     @Override
     public Collection<User> findAllUsers() {
         return users.values();
+    }
+
+    @Override
+    public Optional<User> findUserById(Long id) {
+        return users.containsKey(id) ? Optional.of(users.get(id)) : Optional.empty();
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        users.remove(id);
+    }
+
+    @Override
+    public void addToFriends(Long userId, Long friendId) {
+        User user = users.get(userId);
+        User friend = users.get(friendId);
+
+        if (user == null || friend == null) {
+            throw new NotFoundException("Один из пользователей не найден");
+        }
+
+        if (!user.getFriends().add(friendId)) {
+            throw new IllegalArgumentException("Пользователь уже в друзьях");
+        }
+
+        friend.getFriends().add(userId);
+    }
+
+    @Override
+    public void removeFriend(Long id, Long friendId) {
+        User user = users.get(id);
+        User friend = users.get(friendId);
+
+        if (user == null || friend == null) {
+            throw new NotFoundException("Один из пользователей не найден");
+        }
+
+        if (user.getFriends().contains(friendId)) {
+            user.getFriends().remove(friendId);
+            friend.getFriends().remove(id);
+        }
+    }
+
+    @Override
+    public Set<Long> findCommonFriends(Long id, Long friendId) {
+        User user = users.get(id);
+        User friend = users.get(friendId);
+
+        if (user == null || friend == null) {
+            throw new NotFoundException("Один из пользователей не найден");
+        }
+
+        return user.getFriends().stream()
+                .filter(friend.getFriends()::contains)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Long> findFriends(Long id) {
+        if (!users.containsKey(id)) {
+            throw new NotFoundException("Пользователь не найден");
+        }
+        return users.get(id).getFriends();
     }
 
 }

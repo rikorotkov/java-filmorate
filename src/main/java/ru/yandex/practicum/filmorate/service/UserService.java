@@ -3,13 +3,13 @@ package ru.yandex.practicum.filmorate.service;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.Set;
 
 public interface UserService {
 
-    Collection<User> findAllUsres();
+    Collection<User> findAllUsers();
 
-    Optional<User> findUserById(long id);
+    User findUserById(Long id);
 
     User createUser(User user);
 
@@ -17,12 +17,12 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    void addFried(Long id, Long friendId);
+    void addFriend(Long id, Long friendId);
 
-    void removeFried(Long id, Long friendId);
+    void removeFriend(Long id, Long friendId);
 
-    Collection<User> findAllFrieds(Long id);
+    Set<Long> findAllFriends(Long id);
 
-    Collection<User> findCommonFrieds(Long id, Long friendId);
+    Set<Long> findCommonFriends(Long id, Long friendId);
 
 }

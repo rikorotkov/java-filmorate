@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @ToString
@@ -26,6 +28,8 @@ public class User {
     private String login;
 
     private String name;
+
+    private Set<Long> friends = new HashSet<>();
 
     @NotNull(message = "Дата рождения не может быть пустой")
     @PastOrPresent(message = "Дата рождения не может быть в будущем")

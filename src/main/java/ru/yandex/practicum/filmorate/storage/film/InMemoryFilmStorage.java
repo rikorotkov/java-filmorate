@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -44,6 +45,16 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Collection<Film> findAllFilms() {
         return films.values();
+    }
+
+    @Override
+    public Optional<Film> findFilmById(long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void deleteFilm(long id) {
+
     }
 
     private void validateFilmRelease(Film film) {
