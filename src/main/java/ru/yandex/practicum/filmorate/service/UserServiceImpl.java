@@ -52,12 +52,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<Long> findAllFriends(Long id) {
+    public Set<User> findAllFriends(Long id) {
         return userStorage.findFriends(id);
     }
 
     @Override
-    public Set<Long> findCommonFriends(Long id, Long friendId) {
+    public Set<User> findCommonFriends(Long id, Long friendId) {
         return userStorage.findCommonFriends(id, friendId);
     }
 

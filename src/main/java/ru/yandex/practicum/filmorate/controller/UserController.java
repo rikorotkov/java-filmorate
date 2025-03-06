@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public Set<Long> findFriends(@PathVariable Long id) {
+    public Set<User> findFriends(@PathVariable Long id) {
         return userService.findAllFriends(id);
     }
 
@@ -60,8 +60,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{friendId}")
-    public ResponseEntity<Set<Long>> findCommonFriends(@PathVariable Long id, @PathVariable Long friendId) {
-        Set<Long> commonFriends = userService.findCommonFriends(id, friendId);
+    public ResponseEntity<Set<User>> findCommonFriends(@PathVariable Long id, @PathVariable Long friendId) {
+        Set<User> commonFriends = userService.findCommonFriends(id, friendId);
         return ResponseEntity.ok().body(commonFriends);
     }
 

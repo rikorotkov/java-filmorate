@@ -21,8 +21,8 @@ public interface UserService {
 
     void removeFriend(Long id, Long friendId);
 
-    Set<Long> findAllFriends(Long id);
+    Set<User> findAllFriends(Long id);
 
-    Set<Long> findCommonFriends(Long id, Long friendId);
+    Set<User> findCommonFriends(Long id, Long friendId);
 
 }

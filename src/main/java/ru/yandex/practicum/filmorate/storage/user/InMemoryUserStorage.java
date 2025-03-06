@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.exception.UserAlreadyIsFriend;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -58,64 +59,46 @@ public class InMemoryUserStorage implements UserStorage {
     public void addToFriends(Long userId, Long friendId) {
         User user = users.get(userId);
         User friend = users.get(friendId);
-
         if (user == null || friend == null) {
             throw new NotFoundException("Один из пользователей не найден");
         }
-
         if (user.getFriends().contains(friendId)) {
             throw new UserAlreadyIsFriend("Пользователь уже в друзьях");
         }
-
         user.getFriends().add(friendId);
         friend.getFriends().add(userId);
+    }
+
+    @Override
+    public Set<User> findCommonFriends(Long id, Long friendId) {
+        User user = users.get(id);
+        User friend = users.get(friendId);
+        if (user == null || friend == null) {
+            throw new NotFoundException("Один из пользователей не найден");
+        }
+        Set<Long> commonFriendIds = new HashSet<>(user.getFriends());
+        commonFriendIds.retainAll(friend.getFriends());
+        return commonFriendIds.stream().map(users::get).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<User> findFriends(Long id) {
+        User user = users.get(id);
+        if (user == null) {
+            throw new NotFoundException("Пользователь не найден");
+        }
+        return user.getFriends().stream().map(users::get).collect(Collectors.toSet());
     }
 
     @Override
     public void removeFriend(Long id, Long friendId) {
         User user = users.get(id);
         User friend = users.get(friendId);
-
         if (user == null || friend == null) {
             throw new NotFoundException("Один из пользователей не найден");
         }
-
-        if (user.getFriends().contains(friendId)) {
-            user.getFriends().remove(friendId);
-            friend.getFriends().remove(id);
-        }
-    }
-
-    @Override
-    public Set<Long> findCommonFriends(Long id, Long friendId) {
-        User user = users.get(id);
-        User friend = users.get(friendId);
-
-        if (user == null || friend == null) {
-            throw new NotFoundException("Один из пользователей не найден");
-        }
-
-        log.info("Друзья пользователя 1 - {}", user.getFriends().toString());
-        log.info("Друзья пользователя 2 - {}", friend.getFriends().toString());
-
-        Set<Long> commonFriends = new HashSet<>(user.getFriends());
-
-        commonFriends.retainAll(friend.getFriends());
-
-        if (commonFriends.isEmpty()) {
-            throw new NotFoundException("Нет общих друзей");
-        }
-
-        log.info("Общие друзья - {}", commonFriends);
-        return commonFriends;
-    }
-
-    @Override
-    public Set<Long> findFriends(Long id) {
-        if (!users.containsKey(id)) {
-            throw new NotFoundException("Пользователь не найден");
-        }
-        return users.get(id).getFriends();
+        user.getFriends().remove(friendId);
+        friend.getFriends().remove(id);
     }
 
 }
