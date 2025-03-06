@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,37 +21,37 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Optional<Film> findFilmById(Long id) {
-        return Optional.empty();
+        return filmStorage.findFilmById(id);
     }
 
     @Override
     public Film createFilm(Film film) {
-        return null;
+        return filmStorage.createFilm(film);
     }
 
     @Override
     public Film updateFilm(Film film) {
-        return null;
+        return filmStorage.updateFilm(film);
     }
 
     @Override
     public void deleteFilm(Long id) {
-
+        filmStorage.deleteFilm(id);
     }
 
     @Override
     public void likeFilm(Long userId, Long filmId) {
-
+        filmStorage.likeFilm(userId, filmId);
     }
 
     @Override
     public void dislikeFilm(Long userId, Long filmId) {
-
+        filmStorage.dislikeFilm(userId, filmId);
     }
 
     @Override
     public Collection<Film> findFilmsByTopLikes(int count) {
-        return List.of();
+        return filmStorage.findFilmsByTopLikes(count);
     }
 
 }
