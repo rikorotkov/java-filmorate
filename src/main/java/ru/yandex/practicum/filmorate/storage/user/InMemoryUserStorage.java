@@ -1,12 +1,13 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
@@ -89,13 +90,23 @@ public class InMemoryUserStorage implements UserStorage {
         User user = users.get(id);
         User friend = users.get(friendId);
 
+        System.out.println(user.getFriends());
+        System.out.println(friend.getFriends());
+
         if (user == null || friend == null) {
             throw new NotFoundException("Один из пользователей не найден");
         }
 
-        return user.getFriends().stream()
-                .filter(friend.getFriends()::contains)
-                .collect(Collectors.toSet());
+        Set<Long> commonFriends = new HashSet<>(user.getFriends());
+
+        commonFriends.retainAll(friend.getFriends());
+
+        if (commonFriends.isEmpty()) {
+            throw new NotFoundException("Нет общих друзей");
+        }
+
+        System.out.println(commonFriends);
+        return commonFriends;
     }
 
     @Override

@@ -4,17 +4,18 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Data
 @ToString
+@NoArgsConstructor
 @EqualsAndHashCode
+@AllArgsConstructor
 public class User {
 
     private Long id;
