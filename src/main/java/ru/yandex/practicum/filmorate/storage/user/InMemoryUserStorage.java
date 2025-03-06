@@ -61,10 +61,11 @@ public class InMemoryUserStorage implements UserStorage {
             throw new NotFoundException("Один из пользователей не найден");
         }
 
-        if (!user.getFriends().add(friendId)) {
+        if (user.getFriends().contains(friendId)) {
             throw new IllegalArgumentException("Пользователь уже в друзьях");
         }
 
+        user.getFriends().add(friendId);
         friend.getFriends().add(userId);
     }
 

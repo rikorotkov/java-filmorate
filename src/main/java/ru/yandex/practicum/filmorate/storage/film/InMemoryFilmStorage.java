@@ -4,18 +4,23 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.WrongReleaseDateException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> films = new HashMap<>();
+    private final UserStorage userStorage;
     private long idCounter = 1;
+
+    public InMemoryFilmStorage(UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
 
     @Override
     public Film createFilm(Film film) {
@@ -49,12 +54,54 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Optional<Film> findFilmById(long id) {
-        return Optional.empty();
+        return Optional.ofNullable(films.get(id));
     }
 
     @Override
-    public void deleteFilm(long id) {
+    public void deleteFilm(Long id) {
+        films.remove(id);
+    }
 
+    @Override
+    public void likeFilm(Long userId, Long filmId) {
+        Film film = films.get(filmId);
+        Optional<User> user = userStorage.findUserById(userId);
+
+        if (user.isEmpty()) {
+            throw new NotFoundException("Пользователь не найден");
+        }
+        if (film == null) {
+            throw new NotFoundException("Фильм не найден");
+        }
+
+        film.getUsersLike().add(userId);
+
+    }
+
+    @Override
+    public void dislikeFilm(Long userId, Long filmId) {
+        Film film = films.get(filmId);
+        Optional<User> user = userStorage.findUserById(userId);
+
+        if (user.isEmpty()) {
+            throw new NotFoundException("Пользователь не найден");
+        }
+        if (film == null) {
+            throw new NotFoundException("Фильм не найден");
+        }
+        if (!film.getUsersLike().contains(userId)) {
+            throw new NotFoundException("Не найден лайк от пользователя");
+        }
+
+        film.getUsersLike().remove(userId);
+    }
+
+    @Override
+    public Collection<Film> findFilmsByTopLikes(int count) {
+        return films.values().stream()
+                .sorted(Comparator.comparingInt((Film f) -> f.getUsersLike().size()).reversed())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     private void validateFilmRelease(Film film) {
