@@ -25,6 +25,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film createFilm(Film film) {
         film.setId(idCounter++);
+        validateFilmRelease(film);
         films.put(film.getId(), film);
         return film;
     }
@@ -79,7 +80,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void dislikeFilm(Long userId, Long filmId) {
+    public void dislikeFilm(Long filmId, Long userId) {
         Film film = films.get(filmId);
         Optional<User> user = userStorage.findUserById(userId);
 
