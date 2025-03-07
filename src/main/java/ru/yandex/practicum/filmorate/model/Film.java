@@ -13,6 +13,7 @@ import java.util.Set;
  */
 @Data
 @ToString
+@Builder(toBuilder = true)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor

@@ -37,15 +37,16 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         validateFilmRelease(film);
 
-        Film updateFilm = films.get(film.getId());
-        updateFilm.setName(film.getName());
-        updateFilm.setReleaseDate(film.getReleaseDate());
-        updateFilm.setDescription(film.getDescription());
-        updateFilm.setDuration(film.getDuration());
+        Film updatedFilm = films.get(film.getId()).toBuilder()
+                .name(film.getName())
+                .releaseDate(film.getReleaseDate())
+                .description(film.getDescription())
+                .duration(film.getDuration())
+                .build();
 
-        films.put(film.getId(), updateFilm);
+        films.put(film.getId(), updatedFilm);
 
-        return updateFilm;
+        return updatedFilm;
     }
 
     @Override
@@ -60,6 +61,9 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public void deleteFilm(Long id) {
+        if (!films.containsKey(id)) {
+            throw new NotFoundException("Фильм с id " + id + " не найден");
+        }
         films.remove(id);
     }
 
