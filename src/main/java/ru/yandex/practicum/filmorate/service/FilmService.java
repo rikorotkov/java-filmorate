@@ -23,4 +23,6 @@ public interface FilmService {
 
     Collection<Film> findFilmsByTopLikes(int count);
 
+    boolean existsById(long id);
+
 }

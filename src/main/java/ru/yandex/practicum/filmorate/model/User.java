@@ -12,6 +12,7 @@ import java.util.Set;
 
 
 @Data
+@Builder
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode
