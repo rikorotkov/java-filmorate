@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
         userStorage.removeFriend(userId, friendId);
     }
 
+
     @Override
     public List<User> findAllFriends(Long id) {
         if (!userStorage.existsById(id)) {

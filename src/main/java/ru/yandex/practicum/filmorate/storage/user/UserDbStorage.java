@@ -12,6 +12,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
@@ -80,18 +81,26 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void addToFriends(Long userId, Long friendId) {
-        jdbcTemplate.update(
-                "INSERT INTO friendships (user_id, friend_id) VALUES (?, ?)",
-                userId, friendId
-        );
+        String sql = "INSERT INTO friendships (user_id, friend_id, created_at) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, userId, friendId, LocalDateTime.now());
     }
 
     @Override
     public void removeFriend(Long userId, Long friendId) {
-        jdbcTemplate.update(
-                "DELETE FROM friendships WHERE user_id = ? AND friend_id = ?",
-                userId, friendId
-        );
+//        jdbcTemplate.update(
+//                "DELETE FROM friendships WHERE user_id = ? AND friend_id = ?",
+//                userId, friendId
+//        );
+//        jdbcTemplate.update(
+//                "DELETE FROM friendships WHERE user_id = ? AND friend_id = ?",
+//                userId, friendId
+//        );
+//        jdbcTemplate.update(
+//                "DELETE FROM friendships WHERE user_id = ? AND friend_id = ?",
+//                friendId, userId
+//        );
+        jdbcTemplate.update("DELETE FROM friendships WHERE user_id = ? AND friend_id = ?",
+                userId, friendId);
     }
 
     @Override

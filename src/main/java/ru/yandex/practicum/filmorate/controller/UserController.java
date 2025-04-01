@@ -12,7 +12,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -68,14 +70,21 @@ public class UserController {
         userService.addFriend(userId, friendId);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{userId}/friends/{friendId}")
-    public ResponseEntity<Void> removeFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+    public ResponseEntity<Map<String, String>> removeFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+        Map<String, String> response = new HashMap<>();
+
         if (!userService.existsById(userId) || !userService.existsById(friendId)) {
-            throw new NotFoundException("Пользователь не найден");
+            response.put("error", "Пользователь не найден");
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
         }
 
         if (!userService.isFriend(userId, friendId)) {
-            throw new NotFoundException("Дружба не существует");
+            response.put("error", "Дружба не существует");
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
         }
 
         userService.removeFriend(userId, friendId);
