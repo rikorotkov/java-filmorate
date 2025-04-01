@@ -75,16 +75,36 @@ public class UserController {
     public ResponseEntity<Map<String, String>> removeFriend(@PathVariable Long userId, @PathVariable Long friendId) {
         Map<String, String> response = new HashMap<>();
 
+        //not friend remove - 200, 204
+        // дружеская взаимность
+        if (userService.isFriend(userId, friendId) || userService.isFriend(friendId, userId)) {
+            userService.removeFriend(userId, friendId);
+            userService.removeFriend(friendId, userId);
+            return ResponseEntity.noContent().build();
+        }
+
+        if (userService.isFriend(friendId, userId)) {
+            response.put("error", "Дружба не существует");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
         if (!userService.existsById(userId) || !userService.existsById(friendId)) {
             response.put("error", "Пользователь не найден");
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
         }
 
         if (!userService.isFriend(userId, friendId)) {
             response.put("error", "Дружба не существует");
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+//            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+        }
+
+        if (!userService.isFriend(friendId, userId)) {
+            response.put("error", "Дружба не существует");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         userService.removeFriend(userId, friendId);
