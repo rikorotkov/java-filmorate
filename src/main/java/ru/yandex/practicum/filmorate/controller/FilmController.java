@@ -61,12 +61,6 @@ public class FilmController {
 
     @DeleteMapping("/{id}/like/{userId}")
     public void dislikeFilm(@PathVariable Long id, @PathVariable Long userId) {
-        if (!filmService.existsById(id)) {
-            throw new NotFoundException("Фильм не найден");
-        }
-        if (!userService.existsById(userId)) {
-            throw new NotFoundException("Пользователь не найден");
-        }
         filmService.dislikeFilm(id, userId);
     }
 

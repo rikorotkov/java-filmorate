@@ -43,7 +43,7 @@ public class FilmServiceImpl implements FilmService {
     public Film createFilm(Film film) {
         film.setUsersLike(new HashSet<>());
         if (film.getMpa() == null || !mpaDao.existsById(film.getMpa().getId())) {
-            throw new NotFoundException("MPA рейтинг с id " + film.getMpa().getId() + " не найден");
+            throw new NotFoundException("Мпа рейтинг с id " + film.getMpa().getId() + " не найден");
         }
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
@@ -58,7 +58,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Film updateFilm(Film film) {
         if (film.getMpa() == null || !mpaDao.existsById(film.getMpa().getId())) {
-            throw new NotFoundException("MPA рейтинг не найден");
+            throw new NotFoundException("Мпа рейтинг не найден");
         }
         if (film.getGenres() != null) {
             for (Genre genre : film.getGenres()) {
@@ -88,7 +88,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Collection<Film> findFilmsByTopLikes(int count) {
         if (count <= 0) {
-            throw new ValidationException("Count не может быть < 0");
+            throw new ValidationException("Количество не может быть < 0");
         }
         return filmStorage.findFilmsByTopLikes(count);
     }
