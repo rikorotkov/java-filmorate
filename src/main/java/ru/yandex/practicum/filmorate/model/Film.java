@@ -35,6 +35,16 @@ public class Film {
     @Positive(message = "Продолжительность фильма должна быть положительным числом")
     private Integer duration;
 
+    private Set<Genre> genres;
+
+    private MpaRating mpa;
+
     private Set<Long> usersLike = new HashSet<>();
+
+    private Integer likesCount;
+
+    public Integer getLikesCount() {
+        return this.likesCount != null ? this.likesCount : this.usersLike.size();
+    }
 
 }

@@ -55,8 +55,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Optional<Film> findFilmById(long id) {
-        return Optional.ofNullable(films.get(id));
+    public Film findFilmById(long id) {
+        for (Film film : films.values()) {
+            if (film.getId() == id) {
+                return film;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -79,7 +84,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new NotFoundException("Фильм не найден");
         }
 
-        film.getUsersLike().add(userId);
+        film.getUsersLike().add(user.get().getId());
 
     }
 
@@ -107,6 +112,16 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .sorted(Comparator.comparingInt((Film f) -> f.getUsersLike().size()).reversed())
                 .limit(count)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean existsById(long id) {
+        for (Film film : films.values()) {
+            if (film.getId() == id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void validateFilmRelease(Film film) {
